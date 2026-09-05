@@ -1,6 +1,0 @@
-# Preserve byte-exact inputs and accepted outputs covered by SHA256SUMS.
-* -text
-*.pdf -diff
-artifacts/accepted-results/** -text
-verification/**/*.py -text
-verification/*.json -text

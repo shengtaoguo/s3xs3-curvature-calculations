@@ -126,7 +126,7 @@ def main():
         verify.second_family()
         publish(dict(case="complete-second-family", passed=True))
         save("compact-and-recurrence", "compact K1 and independent full-connection cubic")
-        runpy.run_path(str(Path(__file__).with_name("audit_checks.py")), run_name="__main__")
+        runpy.run_path(str(Path(__file__).resolve().parents[1] / "original" / "audit_checks.py"), run_name="__main__")
         publish(dict(case="compact-K1-and-full-connection-cubic", passed=True))
         save("complete", "all selected complete-bundle checks passed")
         return

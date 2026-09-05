@@ -1,7 +1,0 @@
-{
-  "scope": "Supplied verify.first_family() replay over Q(z), including O margin and mixed jets",
-  "checks": {
-    "supplied_first_family_assertions": "all passed"
-  },
-  "elapsed_seconds": 81.62345123291016
-}

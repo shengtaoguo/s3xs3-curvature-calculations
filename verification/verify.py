@@ -19,16 +19,6 @@ ORIGINAL = HERE / "original"
 AUDITS = HERE / "audits"
 
 
-def run_integrity() -> None:
-    process = subprocess.run(
-        [sys.executable, str(HERE / "verify_checksums.py")],
-        cwd=ROOT,
-        check=False,
-    )
-    if process.returncode:
-        raise SystemExit("FAILED: repository integrity")
-
-
 def numerical_diagnostics(result: Path, kind: str) -> None:
     rows = json.loads(result.read_text(encoding="utf-8"))["records"]
     if kind == "cubic":
@@ -63,17 +53,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--suite",
-        choices=["integrity", "smoke", "certificate", "independent", "numerical", "all"],
+        choices=["smoke", "certificate", "independent", "numerical", "all"],
         default="all",
     )
     args = parser.parse_args()
     if not __debug__ or sys.flags.optimize:
         parser.error("optimized Python disables certificate assertions; omit -O and -OO")
-
-    run_integrity()
-    if args.suite == "integrity":
-        print("VERIFIED: repository integrity")
-        return 0
 
     try:
         import numpy

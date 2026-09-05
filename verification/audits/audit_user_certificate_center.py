@@ -117,7 +117,7 @@ def main():
     diagonal()
     out["checks"]["supplied_full_normal_diagonal"] = "pass"
     progress("supplied_diagonal_odd", "Replaying supplied full-normal diagonal odd-height routine")
-    runpy.run_path(str(Path(__file__).with_name("audit_diagonal_odd.py")), run_name="__main__")
+    runpy.run_path(str(Path(__file__).resolve().parents[1] / "original" / "audit_diagonal_odd.py"), run_name="__main__")
     out["checks"]["supplied_full_normal_diagonal_odd"] = "pass"
     out["elapsed_seconds"] = time.time() - began
     target.write_text(json.dumps(out, indent=2), encoding="utf-8")

@@ -1,140 +1,66 @@
-# Certificate for Positive Sectional Curvature on S3 x S3
+# Curvature calculations for S3 x S3
 
-This repository is the versioned computational companion to
-*A Metric with Positive Sectional Curvature on S3 x S3*.
-It contains the exact symbolic calculations used for the finite curvature
-identities in the paper, accepted replay outputs, and additional audits of
-the most sensitive normal-minimization calculations.
+Computational companion to *A Metric with Positive Sectional Curvature on
+S3 x S3*, September 5, 2026. The version cited by the paper is
+`v0.1.0-paper-2026-09-05`.
 
-The repository does **not** formalize or independently prove the whole
-geometric theorem. The paper proves the zero-locus geometry, smooth global
-extensions, parity and averaging arguments, and the final compactness step.
-The programs verify the finite algebraic identities identified in
-[CLAIM-MAP.md](CLAIM-MAP.md).
+## Run
 
-## Paper snapshot
-
-The exact manuscript snapshot checked by this repository is
-[artifacts/manuscript/paper.pdf](artifacts/manuscript/paper.pdf). Its title,
-page count, SHA-256 digest, and source checkpoint are recorded in
-[repository-manifest.json](repository-manifest.json). The release tag
-`v0.1.0-paper-2026-09-05` fixes the repository version cited by the paper.
-
-## Verification
-
-The tested environment is Python 3.11.9 with NumPy 2.4.6 and SymPy 1.14.0.
-No GPU, network service, API key, server account, TeX installation, or
-optimizer is needed. From the repository root, create a virtual environment
-if desired, install the pinned dependencies, and run
+Tested with Python 3.11.9, NumPy 2.4.1, and SymPy 1.14.0.
+From the repository root:
 
 ```sh
 python3 -m pip install -r verification/requirements.txt
 python3 verification/verify.py
 ```
 
-The default command runs all exact checks and the separately labelled
-floating-point diagnostics. It is single-process and normally takes about
-5--15 minutes, depending on the machine. A successful run prints a line
-beginning `VERIFIED:` and exits with status `0`. Do not use Python's `-O`
-or `-OO` options: the certificate programs deliberately use assertions.
+The command runs the exact checks and the additional numerical checks
+sequentially. It prints `PASS:` for completed checks, ends with
+`VERIFIED:`, and exits with status zero on success. Failed assertions or
+numerical comparisons produce a nonzero exit status. Do not use Python
+`-O` or `-OO`, which disable assertions.
 
-For a quick standard-library-only integrity check, run
-
-```sh
-python3 verification/verify_checksums.py
-```
-
-Available bounded suites are
+Results and logs are generated in `replay-results/`; they are not committed.
+For a shorter run, choose a suite:
 
 ```sh
-python3 verification/verify.py --suite integrity
-python3 verification/verify.py --suite smoke
-python3 verification/verify.py --suite certificate
-python3 verification/verify.py --suite independent
-python3 verification/verify.py --suite numerical
-python3 verification/verify.py --suite all
+python3 verification/verify.py --suite certificate  # original exact checks
+python3 verification/verify.py --suite independent  # additional exact checks
+python3 verification/verify.py --suite numerical    # coordinate diagnostics
+python3 verification/verify.py --suite smoke        # quick point checks
 ```
 
-Each mathematical run writes new logs beneath `replay-results/`; that
-directory is ignored by Git, so accepted evidence is never overwritten.
-A failed assertion, nonzero child exit, missing dependency, or checksum
-mismatch makes the entry point fail.
+## Files and paper references
 
-## Repository layout
+`verification/original/` contains the original exact curvature engine,
+its verifier, and the two supplemental checks.
+`verification/audits/` contains the additional exact checks and the
+coordinate implementation. Each file is needed by a listed check or its
+imports; there are no packaging or release scripts.
 
-```text
-s3xs3-positive-curvature-certificate/
-├── artifacts/
-│   ├── manuscript/
-│   │   └── paper.pdf                 # exact paper snapshot
-│   └── accepted-results/             # recorded JSON outputs and logs
-├── docs/                              # scope and dependency audits
-├── verification/
-│   ├── verify.py                      # only mathematical entry point
-│   ├── verify_checksums.py            # complete inventory check
-│   ├── requirements.txt               # pinned Python dependencies
-│   ├── verification-report.json       # accepted-run summary
-│   ├── original/                       # original exact certificate engine
-│   └── audits/                         # additional exact and numerical audits
-├── CLAIM-MAP.md                        # paper claim to executable check
-├── repository-manifest.json            # claim, artifact, and version metadata
-└── SHA256SUMS                          # hashes of all distributed files
-```
+| Paper calculation | Code, relative to `verification/` |
+| --- | --- |
+| Proposition 4.2: type-II coefficient `282877/2278125` | `original/verify.py:second_family` |
+| Proposition 5.1: quadratic matrices and lower bound | `original/verify.py:first_family` |
+| Proposition 5.4: mixed transverse derivatives | `original/verify.py:first_family`, `original/audit_checks.py` |
+| Proposition 6.1: generic cubic and stationarity equations | `original/verify.py:first_family`, `audits/audit_user_certificate_engine.py --symbolic` |
+| Appendix A.4: full normal calculation at the diagonal | `original/verify.py:diagonal`, `original/audit_diagonal_odd.py` |
+| Lemma 6.2: smooth diagonal path | `audits/audit_user_certificate_center.py` |
+| Additional quadratic and coordinate checks | `audits/audit_user_certificate_quadratic.py`, `audits/audit_user_certificate_coordinates.py` |
 
-Only `verification/verify.py` is intended as the mathematical entry point.
-Its exact flow is
+Use the top-level verification command above; it sets the required import
+paths and runs the assertions.
 
-```text
-verify.py
-├── original/verify.py
-├── original/{audit_checks.py,audit_diagonal_odd.py}
-├── audits/audit_user_certificate_engine.py
-├── audits/audit_user_certificate_center.py
-├── audits/audit_user_certificate_quadratic.py
-└── audits/audit_user_certificate_coordinates.py
-    └── audits/{so4_matrix_twojet.py,so4_fd_probe.py}
-```
+## Scope
 
-The original exact engine and the contracted-curvature audit share the
-metric and tensor two-jets. The coordinate audit differentiates the sphere
-charts and tensors separately but uses floating-point arithmetic. These
-dependency boundaries are stated in the claim map and the audit notes.
+The exact routines check the displayed finite algebraic identities over
+the rationals or `Q(z)`. The paper supplies the geometric arguments for
+the zero locus, normal Hessian, smooth corrections, averaging, and uniform
+positivity, including why the finite common-phase checks suffice.
 
-## What the checks establish
-
-The exact suites check, among other identities:
-
-- the type-I quadratic coefficient matrices and the uniform lower bound;
-- the type-II full base-and-plane Schur coefficient
-  `282877/2278125`;
-- the mixed transverse-jet cancellations, including the algebraic `K1`;
-- the generic cubic coefficient
-  `512/375 + (9728/21125) cos(2 theta)` and all eight stationarity equations;
-- the full-normal diagonal calculation and cubic coefficient
-  `115712/63375` along a smooth moving-base curve.
-
-The finite common-phase checks are not presented as sampling evidence:
-the paper proves why evaluation at those phases is injective on the relevant
-finite-dimensional trigonometric space. Likewise, the rational angular
-parameterization is supplemented by a direct calculation at the diagonal.
-
-The code does not establish the classification of all zero planes, the
-positive normal Hessian globally, the smooth integral construction of the
-geometric mixed correction, the parity reduction of the cubic average, the
-Poisson extension, or the final uniform positivity argument. Those are
-mathematical parts of the paper.
-
-## Provenance and limitations
-
-`verification/original/` preserves the exact scripts supplied with the
-construction. `verification/audits/` contains later checks, including a
-contracted-curvature calculation that avoids the original cubic evaluator,
-a smooth diagonal path, and a separately differentiated coordinate audit.
-The accepted outputs are included for inspection; reruns create separate
-results and do not silently replace them.
-
-This is a certificate companion, not a search repository. It does not include
-the exploratory parameter search, unrelated failed candidates, machine
-launchers, credentials, or the larger research workspace. The rational data
-are fixed inputs, and no numerical minimum is used as proof of positive
-sectional curvature.
+The contracted-curvature audit shares the original metric and tensor
+two-jets. The separate coordinate implementation uses floating-point
+arithmetic and provides corroborating checks. The integral mixed correction
+is proved in the paper; the corresponding code checks the algebraic
+implementation. These programs are not an end-to-end formalization of the
+geometric theorem.
