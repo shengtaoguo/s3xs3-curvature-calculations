@@ -22,24 +22,24 @@ Results are written to `replay-results/`.
 
 ```text
 verification/
-├── verify.py                              # runs the checks
-├── requirements.txt                       # Python dependencies
+├── verify.py                                    # runs the checks
+├── requirements.txt                             # Python dependencies
 ├── original/
-│   ├── verify.py                          # main exact assertions
-│   ├── exact_engine.py                    # metric, tensor jets, and curvature
-│   ├── exact_sparse.py                    # linear variation and contractions
-│   ├── exact_cubic.py                     # third-order curvature expansion
-│   ├── exact_cross_checks.py              # mixed terms
-│   ├── exact_diagonal.py                  # full normal calculation at the diagonal
-│   ├── exact_h0.py                        # type-II perturbation
-│   ├── audit_checks.py                    # mixed correction and cubic checks
-│   └── audit_diagonal_odd.py              # diagonal height-tensor check
+│   ├── verify.py                                # main exact assertions
+│   ├── exact_engine.py                          # metric, tensor jets, and curvature
+│   ├── exact_sparse.py                          # linear variation and contractions
+│   ├── exact_cubic.py                           # third-order curvature expansion
+│   ├── exact_cross_checks.py                    # mixed terms
+│   ├── exact_diagonal.py                        # full normal calculation at the diagonal
+│   ├── exact_h0.py                              # type-II perturbation
+│   ├── audit_checks.py                          # mixed correction and cubic checks
+│   └── audit_diagonal_odd.py                    # diagonal height-tensor check
 └── audits/
-    ├── audit_user_certificate_engine.py   # contracted-curvature check
-    ├── audit_user_certificate_center.py   # smooth diagonal path
-    ├── audit_user_certificate_quadratic.py # additional quadratic checks
-    ├── audit_user_certificate_coordinates.py # numerical coordinate checks
-    └── coordinate_geometry.py            # coordinate derivatives and curvature
+    ├── audit_user_certificate_engine.py         # contracted-curvature check
+    ├── audit_user_certificate_center.py         # smooth diagonal path
+    ├── audit_user_certificate_quadratic.py      # additional quadratic checks
+    ├── audit_user_certificate_coordinates.py    # numerical coordinate checks
+    └── coordinate_geometry.py                   # coordinate derivatives and curvature
 ```
 
 ## Paper Claims and Scripts
