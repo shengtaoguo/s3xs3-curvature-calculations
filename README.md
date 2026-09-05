@@ -19,6 +19,11 @@ Success prints `VERIFIED:`; failures exit with a nonzero status.
 Results are written to `replay-results/`.
 The default run also checks that malformed or inconsistent results are rejected.
 
+To reproduce the parameter selection in Section 8, run
+`python3 verification/parameters.py`. This constructs the coefficient equations,
+performs a bounded numerical search, and checks the selected rational data
+exactly. The search is not a proof of global optimality.
+
 ## Files
 
 `original/` contains the main exact calculations used in the paper.
@@ -29,6 +34,7 @@ numerical checks in sphere coordinates. The entry point runs both groups.
 verification/
 ├── verify.py                                    # runs the checks
 ├── test_checks.py                               # tests rejection of incorrect results
+├── parameters.py                                # reconstructs the parameter selection
 ├── requirements.txt                             # Python dependencies
 ├── original/                                    # main exact calculations
 │   ├── verify.py                                # main exact assertions
@@ -59,10 +65,11 @@ Links below open the relevant verification code.
 | Proposition 5.4 | [Mixed transverse derivatives](verification/original/verify.py#L23) | [Mixed-term check](verification/original/audit_checks.py) |
 | Proposition 6.1 | [Cubic coefficient and stationarity](verification/original/verify.py#L23) | [Contracted calculation](verification/audits/audit_user_certificate_engine.py#L113) |
 | Lemma 6.2 | [Smooth diagonal path](verification/audits/audit_user_certificate_center.py#L42) | — |
+| Section 8 | [Parameter selection and exact checks](verification/parameters.py) | — |
 | Appendix A.3 | [Compact K1 identity](verification/original/audit_checks.py#L44) | [Derivative check](verification/original/audit_checks.py) |
 | Appendix A.4 | [Full normal calculation at the diagonal](verification/original/verify.py#L143) | [Height-tensor check](verification/original/audit_diagonal_odd.py) |
 
-These calculations use exact arithmetic over the rationals or ℚ(z).
+The identity checks use exact arithmetic over the rationals or ℚ(z).
 The contracted calculation shares the main metric and tensor two-jets.
 [Separate coordinate checks](verification/audits/audit_user_certificate_coordinates.py)
 use floating-point arithmetic. The global geometric argument and the integral
