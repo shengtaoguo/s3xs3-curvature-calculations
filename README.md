@@ -20,11 +20,15 @@ Results are written to `replay-results/`.
 
 ## Files
 
+`original/` contains the main exact calculations used in the paper.
+`audits/` contains supplementary recomputations of selected coefficients and
+numerical checks in sphere coordinates. The entry point runs both groups.
+
 ```text
 verification/
 ├── verify.py                                    # runs the checks
 ├── requirements.txt                             # Python dependencies
-├── original/
+├── original/                                    # main exact calculations
 │   ├── verify.py                                # main exact assertions
 │   ├── exact_engine.py                          # metric, tensor jets, and curvature
 │   ├── exact_sparse.py                          # linear variation and contractions
@@ -34,7 +38,7 @@ verification/
 │   ├── exact_h0.py                              # type-II perturbation
 │   ├── audit_checks.py                          # mixed correction and cubic checks
 │   └── audit_diagonal_odd.py                    # diagonal height-tensor check
-└── audits/
+└── audits/                                      # supplementary checks
     ├── audit_user_certificate_engine.py         # contracted-curvature check
     ├── audit_user_certificate_center.py         # smooth diagonal path
     ├── audit_user_certificate_quadratic.py      # additional quadratic checks
