@@ -1,0 +1,31 @@
+{
+  "scope": "Exact rational-function generic-angle check p=1, q=((1-z^2)/(1+z^2),2z/(1+z^2),0,0)",
+  "checks": {
+    "independent_contracted_rational_smoke": [
+      "0",
+      "0",
+      "0",
+      "1958912/1584375"
+    ],
+    "contracted_generic_coefficients": [
+      "0",
+      "0",
+      "0",
+      "(115712*z**4 - 2048*z**2 + 115712)/(63375*z**4 + 126750*z**2 + 63375)"
+    ],
+    "claimed_generic_cubic": "(115712*z**4 - 2048*z**2 + 115712)/(63375*z**4 + 126750*z**2 + 63375)",
+    "generic_cubic_difference": "0",
+    "quadratic_graph_stationarity": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    "scope_warning": "Generic rational-function plane calculation only; singular moving-base geometry and global assembly not established by this check."
+  },
+  "elapsed_seconds": 96.81777310371399
+}

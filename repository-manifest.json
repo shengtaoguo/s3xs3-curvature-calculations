@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "repository_type": "computational-companion",
+  "title": "Certificate for A Metric with Positive Sectional Curvature on S3 x S3",
+  "release_tag": "v0.1.0-paper-2026-09-05",
+  "paper": {
+    "path": "artifacts/manuscript/paper.pdf",
+    "sha256": "54d1ff9bda819353bc2758919df0b245aca6eec51d5143aca2c608933505293b",
+    "pages": 23,
+    "source_checkpoint": "86d0f8b9b99ab7f1b3b0e7bdc763cbdbbd2800d8"
+  },
+  "claims": [
+    {
+      "id": "CLAIM-FINITE-CURVATURE-IDENTITIES",
+      "statement": "The finite exact curvature identities identified in CLAIM-MAP.md agree with the displayed rational formulas in the paper.",
+      "logical_role": "These identities are inputs to the paper's geometric argument from the twice-Cheeger background to strict positive sectional curvature.",
+      "verification": "python3 verification/verify.py --suite certificate"
+    },
+    {
+      "id": "CLAIM-EXACT-CROSS-AUDITS",
+      "statement": "The generic cubic, smooth diagonal path, and type-II Schur coefficient pass the additional exact audits listed in CLAIM-MAP.md.",
+      "logical_role": "These checks target the moving-plane and exceptional-stratum calculations most vulnerable to sign, normalization, and complement errors.",
+      "verification": "python3 verification/verify.py --suite independent"
+    },
+    {
+      "id": "CLAIM-COORDINATE-DIAGNOSTICS",
+      "statement": "Selected coefficients agree with a separately differentiated sphere-coordinate implementation within the stated tolerances.",
+      "logical_role": "Corroborative floating-point evidence only; not a proof certificate.",
+      "verification": "python3 verification/verify.py --suite numerical"
+    }
+  ],
+  "not_computationally_established": [
+    "the global classification of zero-curvature planes",
+    "the positive normal Hessian at every point of the zero locus",
+    "the smooth integral construction of the geometric mixed correction",
+    "the parity and Gauss-Bonnet reduction of the cubic average",
+    "the Poisson extension and uniform compactness conclusion",
+    "the complete theorem in a proof assistant"
+  ],
+  "artifacts": [
+    {
+      "id": "PAPER-SNAPSHOT",
+      "path": "artifacts/manuscript/paper.pdf",
+      "sha256": "54d1ff9bda819353bc2758919df0b245aca6eec51d5143aca2c608933505293b",
+      "role": "Exact manuscript snapshot whose formulas are mapped in CLAIM-MAP.md."
+    },
+    {
+      "id": "VERIFICATION-ENTRY",
+      "path": "verification/verify.py",
+      "sha256": "c100a89c4fac4fa50467415013ccd14a9b0511f8f40ffe1cf83516baa02236a2",
+      "role": "Single fail-closed mathematical entry point.",
+      "verifier": {
+        "cwd": ".",
+        "command": ["python3", "verification/verify.py"],
+        "expected_exit": 0,
+        "expected_output_prefix": "VERIFIED:"
+      }
+    },
+    {
+      "id": "ACCEPTED-RESULTS",
+      "path": "artifacts/accepted-results",
+      "role": "Recorded outputs and logs from completed exact and numerical checks; individual file hashes are in SHA256SUMS."
+    }
+  ],
+  "environment": {
+    "tested": "Python 3.11.9; NumPy 2.4.6; SymPy 1.14.0; 64-bit Windows",
+    "requirements": "verification/requirements.txt",
+    "execution": "single-process; numerical library thread limits set to one; no GPU or network required"
+  },
+  "claim_map": "CLAIM-MAP.md",
+  "verification_report": "verification/verification-report.json",
+  "checksum_inventory": "SHA256SUMS"
+}

@@ -1,0 +1,12 @@
+{"phase": "contracted_smoke", "detail": "Validating the contracted formula at the independently replayed rational angle", "elapsed_seconds": 0.0}
+{"phase": "symbolic_jets", "detail": "Building exact rational-function metric and tensor jets", "elapsed_seconds": 3.6578211784362793}
+{"phase": "symbolic_cubic", "detail": "Contracting third-order curvature directly over Q(z)", "elapsed_seconds": 13.003227949142456}
+{"phase": "symbolic_stationarity", "detail": "Checking exact graph derivative 1 of 8", "elapsed_seconds": 17.812121868133545}
+{"phase": "symbolic_stationarity", "detail": "Checking exact graph derivative 2 of 8", "elapsed_seconds": 29.230006217956543}
+{"phase": "symbolic_stationarity", "detail": "Checking exact graph derivative 3 of 8", "elapsed_seconds": 39.20954251289368}
+{"phase": "symbolic_stationarity", "detail": "Checking exact graph derivative 4 of 8", "elapsed_seconds": 52.527732372283936}
+{"phase": "symbolic_stationarity", "detail": "Checking exact graph derivative 5 of 8", "elapsed_seconds": 63.76002597808838}
+{"phase": "symbolic_stationarity", "detail": "Checking exact graph derivative 6 of 8", "elapsed_seconds": 74.58258771896362}
+{"phase": "symbolic_stationarity", "detail": "Checking exact graph derivative 7 of 8", "elapsed_seconds": 87.35185933113098}
+{"phase": "symbolic_stationarity", "detail": "Checking exact graph derivative 8 of 8", "elapsed_seconds": 96.90107417106628}
+{"phase": "complete", "detail": "Rational-function cubic and eight graph-stationarity checks completed", "elapsed_seconds": 106.78570508956909}

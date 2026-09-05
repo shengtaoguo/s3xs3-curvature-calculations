@@ -1,0 +1,112 @@
+{
+  "scope": "Exact rational point p=1, q=(3/5,4/5,0,0); not global verification",
+  "checks": {
+    "metric_cometric_formula": {
+      "total_entries": 36,
+      "nonzero_entries": 0,
+      "first_nonzero": []
+    },
+    "metric_second_derivative_commutator": {
+      "total_entries": 1296,
+      "nonzero_entries": 0,
+      "first_nonzero": []
+    },
+    "background_riemann": {
+      "first_pair_antisymmetry": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "last_pair_antisymmetry": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "pair_interchange": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "first_bianchi": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      }
+    },
+    "background_plane_numerator": "0",
+    "background_plane_gram": "15/8",
+    "B_second_derivative_commutator": {
+      "total_entries": 1296,
+      "nonzero_entries": 0,
+      "first_nonzero": []
+    },
+    "B_linearized_riemann": {
+      "first_pair_antisymmetry": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "last_pair_antisymmetry": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "pair_interchange": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "first_bianchi": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      }
+    },
+    "B_first_curvature": "0",
+    "B_reduced_second": "-896/21125",
+    "B_reduced_second_claim": "-896/21125",
+    "B_reduced_second_difference": "0",
+    "BC_corrected_second": "0",
+    "moving_plane_coefficients": [
+      "0",
+      "0",
+      "0",
+      "1958912/1584375"
+    ],
+    "claimed_cubic": "1958912/1584375",
+    "cubic_difference": "0",
+    "minimizing_displacement": [
+      "-96/65",
+      "24/65",
+      "-1216/1625",
+      "288/1625",
+      "1216/1625",
+      "288/1625",
+      "96/65",
+      "24/65"
+    ],
+    "cubic_riemann": {
+      "first_pair_antisymmetry": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "last_pair_antisymmetry": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "pair_interchange": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      },
+      "first_bianchi": {
+        "total_entries": 1296,
+        "nonzero_entries": 0,
+        "first_nonzero": []
+      }
+    }
+  },
+  "elapsed_seconds": 39.080668449401855
+}

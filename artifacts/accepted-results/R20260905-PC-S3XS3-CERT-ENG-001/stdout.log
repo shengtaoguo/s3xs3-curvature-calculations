@@ -1,0 +1,4 @@
+{"phase": "base", "detail": "Computing exact background connection and curvature", "elapsed_seconds": 0.0}
+{"phase": "linear", "detail": "Checking tensor jets, linearized curvature, and reduced quadratic coefficients", "elapsed_seconds": 2.7895994186401367}
+{"phase": "cubic", "detail": "Computing full third-order connection recurrence and moving plane coefficient", "elapsed_seconds": 15.54715895652771}
+{"phase": "complete", "detail": "Exact point replay complete; inspect all equalities, not only process status", "elapsed_seconds": 39.08218169212341}

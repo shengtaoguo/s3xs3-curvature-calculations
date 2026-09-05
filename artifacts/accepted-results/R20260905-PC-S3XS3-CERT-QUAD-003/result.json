@@ -1,0 +1,12 @@
+{
+  "results": [
+    {
+      "case": "complete-second-family",
+      "passed": true
+    },
+    {
+      "case": "compact-K1-and-full-connection-cubic",
+      "passed": true
+    }
+  ]
+}

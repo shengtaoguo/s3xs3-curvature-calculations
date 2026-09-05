@@ -1,0 +1,55 @@
+{
+  "schema": "s3xs3-curvature-verification-report-v1",
+  "status": "INTERNAL_CHECKS_PASSED",
+  "paper_sha256": "54d1ff9bda819353bc2758919df0b245aca6eec51d5143aca2c608933505293b",
+  "paper_pages": 23,
+  "paper_source_checkpoint": "86d0f8b9b99ab7f1b3b0e7bdc763cbdbbd2800d8",
+  "tested_environment": {
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "sympy": "1.14.0",
+    "platform": "64-bit Windows",
+    "optimization_flags": "disabled"
+  },
+  "exact_checks": [
+    {
+      "name": "original full verifier",
+      "entry": "verification/original/verify.py --part all",
+      "accepted_result": "artifacts/accepted-results/R20260905-PC-S3XS3-CERT-ENG-003",
+      "status": "PASS"
+    },
+    {
+      "name": "generic contracted curvature over Q(z)",
+      "entry": "verification/audits/audit_user_certificate_engine.py --symbolic",
+      "accepted_result": "artifacts/accepted-results/R20260905-PC-S3XS3-CERT-ENG-005",
+      "status": "PASS",
+      "shared_dependency": "uses the original metric and tensor two-jets; does not call either original cubic evaluator"
+    },
+    {
+      "name": "type-II and algebraic K1 audit",
+      "entry": "verification/audits/audit_user_certificate_quadratic.py --kind points",
+      "accepted_result": "artifacts/accepted-results/R20260905-PC-S3XS3-CERT-QUAD-003",
+      "status": "PASS"
+    },
+    {
+      "name": "smooth diagonal path",
+      "entry": "verification/audits/audit_user_certificate_center.py",
+      "accepted_result": "artifacts/accepted-results/R20260905-PC-S3XS3-CERT-GEO-001",
+      "status": "PASS",
+      "shared_dependency": "uses the original curvature recurrence but not its singular optimizer or diagonal contraction"
+    }
+  ],
+  "numerical_checks": [
+    {
+      "name": "separately differentiated coordinate diagnostics",
+      "entry": "verification/audits/audit_user_certificate_coordinates.py",
+      "accepted_results": [
+        "artifacts/accepted-results/R20260905-PC-S3XS3-CERT-ROOT-002",
+        "artifacts/accepted-results/R20260905-PC-S3XS3-CERT-ROOT-003"
+      ],
+      "status": "PASS_WITH_TOLERANCES",
+      "proof_status": "corroborative only"
+    }
+  ],
+  "conclusion": "No checked finite identity failed. This report does not certify the global geometric theorem or constitute external peer review or proof-assistant formalization."
+}

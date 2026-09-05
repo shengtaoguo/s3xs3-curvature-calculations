@@ -1,0 +1,16 @@
+{"phase": "central_cayley_jets", "detail": "Composing spatial jets with a smooth Cayley path at p=q=1", "elapsed_seconds": 0.0}
+{"phase": "central_series_extract", "detail": "Extracting exact total metric/spatial-jet order 0", "elapsed_seconds": 11.538245439529419}
+{"phase": "central_series_extract", "detail": "Extracting exact total metric/spatial-jet order 1", "elapsed_seconds": 11.600045680999756}
+{"phase": "central_series_extract", "detail": "Extracting exact total metric/spatial-jet order 2", "elapsed_seconds": 11.70230746269226}
+{"phase": "central_series_extract", "detail": "Extracting exact total metric/spatial-jet order 3", "elapsed_seconds": 11.937905550003052}
+{"phase": "central_curvature_recurrence", "detail": "Computing the full curvature series after exact spatial-jet composition", "elapsed_seconds": 12.880606889724731}
+series order 1 done 1.1503996849060059
+series order 2 done 4.153386354446411
+series order 3 done 7.794870853424072
+{"phase": "central_graph_stationarity", "detail": "Checking all eight fixed-base graph directions at the smooth optimizer", "elapsed_seconds": 20.710046529769897}
+{"phase": "supplied_diagonal", "detail": "Replaying supplied complete ten-variable/full-normal diagonal routine", "elapsed_seconds": 20.99545669555664}
+PASS: diagonal full normal calculation, quadratic zero and cubic 115712/63375
+Diagonal checks complete in 89.01 seconds
+{"phase": "supplied_diagonal_odd", "detail": "Replaying supplied full-normal diagonal odd-height routine", "elapsed_seconds": 110.02809143066406}
+PASS: full base-and-plane odd quadratic term at the diagonal: 3158117/198450000
+{"phase": "complete", "detail": "Exact pole-free central cubic, graph stationarity, and both full-normal diagonal replays passed", "elapsed_seconds": 148.33678698539734}

@@ -1,0 +1,11 @@
+{"phase": "setup", "detail": "checking product convention", "elapsed_seconds": 0.0, "completed": 0, "heartbeat": 1788579058.9699955, "expected_finish": "unknown"}
+{"phase": "second-family", "detail": "complete base-and-plane H0 reduction", "elapsed_seconds": 0.13189959526062012, "completed": 0, "heartbeat": 1788579059.101895, "expected_finish": "unknown"}
+PASS: full base-and-plane second-family coefficient 282877/2278125
+Second-family checks complete in 24.09 seconds
+{"case": "complete-second-family", "passed": true}
+{"phase": "compact-and-recurrence", "detail": "compact K1 and independent full-connection cubic", "elapsed_seconds": 24.23038077354431, "completed": 1, "heartbeat": 1788579083.2003763, "expected_finish": "unknown"}
+PASS: compact K1 equals coefficient table, including first and second frame derivatives
+PASS: curvature engine recovers product sectional curvature 1/3 and mixed zero
+PASS: independent full-connection curvature recurrence reproduces the cubic exactly
+{"case": "compact-K1-and-full-connection-cubic", "passed": true}
+{"phase": "complete", "detail": "all selected complete-bundle checks passed", "elapsed_seconds": 79.0233085155487, "completed": 2, "heartbeat": 1788579137.993304, "expected_finish": "unknown"}

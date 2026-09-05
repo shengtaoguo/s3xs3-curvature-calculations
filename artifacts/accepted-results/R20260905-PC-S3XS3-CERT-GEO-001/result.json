@@ -1,0 +1,25 @@
+{
+  "scope": "Exact central pole-free path and supplied full-normal diagonal replay",
+  "checks": {
+    "pole_free_central_curvature_coefficients": [
+      "0",
+      "0",
+      "0",
+      "115712/63375"
+    ],
+    "claimed_cubic_difference": "0",
+    "eight_graph_stationarity_derivatives": [
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0",
+      "0"
+    ],
+    "supplied_full_normal_diagonal": "pass",
+    "supplied_full_normal_diagonal_odd": "pass"
+  },
+  "elapsed_seconds": 148.33578038215637
+}
