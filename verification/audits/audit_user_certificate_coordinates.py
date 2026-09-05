@@ -1,9 +1,4 @@
-"""Independent coordinate-jet audit of the September 5 supplied certificate.
-
-No supplied curvature routine is imported. Sphere charts and tensor products
-are differentiated analytically; arithmetic in this first audit is floating
-point, not an exact certificate. All substantive execution is external.
-"""
+"""Coordinate checks using analytic derivatives and floating-point arithmetic."""
 from __future__ import annotations
 import argparse
 import itertools
@@ -11,8 +6,7 @@ import json
 import time
 from pathlib import Path
 import numpy as np
-from so4_matrix_twojet import Jet, block, hstack, vstack, sphere, left_frame
-from so4_fd_probe import curvature
+from coordinate_geometry import Jet, block, hstack, vstack, sphere, left_frame, curvature
 
 
 def adjoint(p):
