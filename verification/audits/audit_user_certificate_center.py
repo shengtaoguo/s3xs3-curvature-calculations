@@ -1,10 +1,4 @@
-"""Pole-free exact central-path audit of the user curvature certificate.
-
-Run only on the configured external worker under a resource lease.  The
-curvature recurrence is reused from the supplied certificate, but the smooth
-Cayley path and coefficient-composition check below are new and independent of
-its singular fixed-base optimizer and its diagonal contraction routine.
-"""
+"""Exact smooth-diagonal-path check using the original curvature recurrence."""
 import argparse
 import itertools
 import json

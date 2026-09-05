@@ -1,8 +1,4 @@
-"""Bounded exact rational-point replay of the supplied September 5 certificate.
-
-This is a consistency audit, not an independent proof of the global theorem.
-Run only on the configured external worker with an active resource lease.
-"""
+"""Exact point and rational-function checks using the original tensor jets."""
 import argparse
 import json
 import itertools

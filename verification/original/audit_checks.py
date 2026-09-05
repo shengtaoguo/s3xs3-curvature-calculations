@@ -41,11 +41,44 @@ def K1_table(p,q):
 def checkzero(a,label):
     assert all(x==0 for x in np.asarray(a,dtype=object).ravel()),label
 
+def check_K1_formal():
+    """Compare the compact formula and table as polynomials in 21 variables."""
+    from sympy import Poly, Rational, symbols
+    p = symbols('p0:4')
+    q = symbols('q0:4')
+    r0 = symbols('r0')
+    coframes = symbols('a0:6') + symbols('b0:6')
+
+    def local(forms, x, kind):
+        l1, l2, l3, h1, h2, h3 = forms
+        u = l1 + h1
+        t = l1*l1 + l1*h1 + h1*h1
+        if kind == 'A':
+            return u*(x[0]*(l2-h2) + x[1]*(Rational(13,7)*l3-h3)) - Rational(4,7)*x[3]*t
+        return u*(x[0]*(Rational(13,7)*l3+h3) - x[1]*(l2+h2)) - Rational(4,7)*x[2]*t
+
+    compact = Rational(11,325)*(local(coframes[6:],p,'A') + local(coframes[:6],q,'B'))
+    compact += Rational(6,65)*r0*(local(coframes[:6],p,'B') + local(coframes[6:],q,'A'))
+    scalars = p + q + tuple(r0*x for x in p+q)
+    table = 0
+    for k, row in enumerate(boco):
+        offset = 6 if k < 4 or k >= 12 else 0
+        for coefficient, (i, j) in zip(row, pairs6):
+            table += scalars[k]*Rational(str(coefficient))*coframes[offset+i]*coframes[offset+j]
+    variables = p + q + (r0,) + coframes
+    left = Poly(compact, *variables, domain='QQ')
+    right = Poly(table, *variables, domain='QQ')
+    if left != right:
+        raise AssertionError('compact K1 and coefficient table differ as formal polynomials')
+    return len(left.terms())
+
 if __name__=='__main__':
+    monomials = check_K1_formal()
+    print(f'PASS: compact K1 equals its coefficient table as a formal polynomial ({monomials} monomials)',flush=True)
     p=ar([Q(1,2),Q(1,2),Q(1,2),Q(1,2)])
     q=ar([(1-z*z)/(1+z*z),2*z/(1+z*z),zero,zero])
     for a,b in zip(K1_compact(p,q),K1_table(p,q)):checkzero(a-b,'compact K1 versus coefficient table')
-    print('PASS: compact K1 equals coefficient table, including first and second frame derivatives',flush=True)
+    print('PASS: compact K1 and table derivatives agree on the specified test curve',flush=True)
     gg=3*eye(6);base=ExactBase(gg,zeros((6,6,6)),zeros((6,6,6,6)))
     for i in range(6):
         for j in range(6):

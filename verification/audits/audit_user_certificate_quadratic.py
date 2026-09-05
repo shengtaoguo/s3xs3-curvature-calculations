@@ -1,14 +1,10 @@
-"""Exact rational point audit of the 2026-09-05 user certificate.
-
-This is an audit, not a positivity certificate.  It uses the supplied ordered
-left-frame engine, whose derivatives and convention are inspected separately,
-and compares its Gram quadratic formula with the full curvature recurrence.
-Run only on the configured external compute resource.
-"""
+"""Exact quadratic checks using the ordered-frame engine and curvature recurrence."""
 from __future__ import annotations
 
 import argparse
+from fractions import Fraction
 import json
+import re
 import runpy
 import time
 from pathlib import Path
@@ -77,6 +73,8 @@ def ldlt_pivots(a):
     values = []
     for k in range(len(a)):
         pivot = a[k, k]
+        if rational(str(pivot), "Hessian pivot") <= 0:
+            raise AssertionError(f"nonpositive Hessian LDL pivot at index {k}")
         values.append(pivot)
         for i in range(k + 1, len(a)):
             for j in range(k + 1, len(a)):
@@ -94,11 +92,84 @@ def clean(v):
     return str(v)
 
 
+POINT_CASES = (
+    "canonical-i", "canonical-j", "left-translate-i", "tilted-i",
+    "negative-angle-j", "type-II-first-null",
+)
+
+
+def rational(value, label):
+    if type(value) is int:
+        return Fraction(value)
+    if isinstance(value, str) and re.fullmatch(r"[+-]?\d+(?:/[1-9]\d*)?", value):
+        return Fraction(value)
+    raise AssertionError(f"{label}: expected an exact rational number")
+
+
+def validate_quadratic_record(rec):
+    """Check a serialized record before accepting it as a successful calculation."""
+    if not isinstance(rec, dict) or rec.get("case") not in POINT_CASES:
+        raise AssertionError("unexpected quadratic case")
+    firsts = rec["first_variations"]
+    if not isinstance(firsts, dict) or set(firsts) != {"O", "B", "C"}:
+        raise AssertionError("incomplete first-variation checks")
+    for name, value in firsts.items():
+        if rational(value, name) != 0:
+            raise AssertionError(f"nonzero first variation for {name}")
+    if rec["case"] == "type-II-first-null":
+        return
+    pivots = rec["hessian_ldlt_pivots"]
+    if not isinstance(pivots, list) or len(pivots) != 8:
+        raise AssertionError("expected eight Hessian LDL pivots")
+    if any(rational(value, "Hessian pivot") <= 0 for value in pivots):
+        raise AssertionError("nonpositive Hessian LDL pivot")
+    if rational(rec["discrepancy"], "quadratic discrepancy") != 0:
+        raise AssertionError("quadratic discrepancy is nonzero")
+    actual = rational(rec["corrected_odd"], "corrected quadratic")
+    expected = rational(rec["claimed_oriented"], "claimed quadratic")
+    if actual != expected:
+        raise AssertionError("corrected quadratic disagrees with the oriented formula")
+    rho = rational(rec["rho"], "rho")
+    margin = rational(rec["margin_over_claimed_bound"], "quadratic margin")
+    if rho < 0 or margin != actual - rho / 250 or margin < 0:
+        raise AssertionError("quadratic lower bound failed")
+    if actual != rational(rec["Q_O"], "Q_O") + rational(rec["L_K0"], "L_K0"):
+        raise AssertionError("quadratic decomposition disagrees")
+    # The reversed-J value is a comparison with the opposite orientation,
+    # so discrepancy_reverse_J is deliberately not required to vanish.
+    if rec["case"] == "canonical-i":
+        for key in ("gram_recurrence_discrepancy", "Q_B_discrepancy"):
+            if key not in rec:
+                raise AssertionError(f"missing comparison: {key}")
+    if "gram_recurrence_discrepancy" in rec:
+        if rational(rec["gram_recurrence_discrepancy"], "recurrence discrepancy") != 0:
+            raise AssertionError("Gram and recurrence calculations disagree")
+        if rational(rec["Q_O_full_recurrence"], "full recurrence") != rational(rec["Q_O"], "Q_O"):
+            raise AssertionError("reported full recurrence disagrees")
+    if "Q_B_discrepancy" in rec:
+        if rational(rec["Q_B_discrepancy"], "B discrepancy") != 0:
+            raise AssertionError("B coefficient discrepancy is nonzero")
+        if rational(rec["Q_B"], "Q_B") != rational(rec["Q_B_claimed"], "claimed Q_B"):
+            raise AssertionError("B coefficient disagrees")
+
+
+def validate_quadratic_results(results):
+    if not isinstance(results, list) or len(results) != len(POINT_CASES):
+        raise AssertionError("expected all six quadratic audit cases")
+    for rec in results:
+        validate_quadratic_record(rec)
+    names = [rec["case"] for rec in results]
+    if len(set(names)) != len(names) or set(names) != set(POINT_CASES):
+        raise AssertionError("quadratic case coverage is incomplete or duplicated")
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", required=True)
-    parser.add_argument("--kind", default="points")
-    args, _ = parser.parse_known_args()
+    parser.add_argument("--kind", choices=("points", "second-audit"), default="points")
+    args = parser.parse_args()
+    if not __debug__:
+        parser.error("optimized Python disables assertions; omit -O and -OO")
     out = Path(args.output)
     status = out.with_suffix(".status.json")
     start = time.time()
@@ -113,7 +184,14 @@ def main():
         print(json.dumps(record), flush=True)
 
     def publish(rec):
-        results.append(clean(rec))
+        encoded = clean(rec)
+        if args.kind == "points":
+            try:
+                validate_quadratic_record(encoded)
+            except (AssertionError, KeyError, TypeError, ValueError) as error:
+                save("failed", str(error))
+                raise
+        results.append(encoded)
         out.write_text(json.dumps(dict(results=results), indent=2), encoding="utf-8")
         print(json.dumps(clean(rec)), flush=True)
 
@@ -183,7 +261,8 @@ def main():
     publish(dict(case="type-II-first-null", first_variations={
         n: first(base, jets[n], axis) for n in ("O", "B", "C")
     }))
-    save("complete", "exact rational audit complete; identities may pass or fail")
+    validate_quadratic_results(results)
+    save("complete", "all six exact quadratic cases passed")
 
 
 if __name__ == "__main__":
