@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from copy import deepcopy
+from fractions import Fraction
 import importlib.util
 import json
 import os
@@ -155,6 +156,93 @@ class AcceptanceChecks(unittest.TestCase):
                 rows[0][key] = value
                 with self.assertRaises(REJECTIONS):
                     quadratic.validate_quadratic_results(rows)
+
+    def test_quadratic_missing_geometry(self):
+        for index, original in enumerate(self.quadratic):
+            for field in ("p", "q", "axis"):
+                with self.subTest(case=original["case"], field=field):
+                    rows = deepcopy(self.quadratic)
+                    del rows[index][field]
+                    with self.assertRaises(REJECTIONS):
+                        quadratic.validate_quadratic_results(rows)
+
+    def test_quadratic_invalid_quaternion_coordinates(self):
+        faults = (
+            None, "1,0,0,0", [], [1, 0, 0], [1, 0, 0, 0, 0],
+            [0, 0, 0, 0], [2, 0, 0, 0], [1., 0, 0, 0],
+            [True, 0, 0, 0], [None, 0, 0, 0], ["1/0", 0, 0, 0],
+            ["NaN", 0, 0, 0], ["1e999", 0, 0, 0],
+            [float("nan"), 0, 0, 0], [float("inf"), 0, 0, 0],
+        )
+        for index, original in enumerate(self.quadratic):
+            for field in ("p", "q"):
+                for value in faults:
+                    with self.subTest(case=original["case"], field=field, value=value):
+                        rows = deepcopy(self.quadratic)
+                        rows[index][field] = deepcopy(value)
+                        with self.assertRaises(REJECTIONS):
+                            quadratic.validate_quadratic_results(rows)
+
+    def test_quadratic_geometry_must_match_case(self):
+        for index, original in enumerate(self.quadratic):
+            for field in ("p", "q"):
+                with self.subTest(case=original["case"], field=field):
+                    rows = deepcopy(self.quadratic)
+                    # The antipode is still a unit quaternion, but is not
+                    # the geometric input prescribed for this case.
+                    rows[index][field] = [str(-Fraction(value)) for value in original[field]]
+                    with self.assertRaises(REJECTIONS):
+                        quadratic.validate_quadratic_results(rows)
+
+    def test_quadratic_invalid_or_mismatched_axis(self):
+        for index, original in enumerate(self.quadratic):
+            faults = (None, False, 0., "0", -1, 3, 99, (original["axis"] + 1) % 3)
+            for value in faults:
+                with self.subTest(case=original["case"], axis=value):
+                    rows = deepcopy(self.quadratic)
+                    rows[index]["axis"] = value
+                    with self.assertRaises(REJECTIONS):
+                        quadratic.validate_quadratic_results(rows)
+
+    def test_quadratic_relabelled_clone_is_rejected(self):
+        canonical = next(row for row in self.quadratic if row["case"] == "canonical-i")
+        rows = [deepcopy(row) if row["case"] == "type-II-first-null"
+                else dict(deepcopy(canonical), case=row["case"])
+                for row in self.quadratic]
+        with self.assertRaises(REJECTIONS):
+            quadratic.validate_quadratic_results(rows)
+
+    def test_quadratic_equivalent_rational_geometry_passes(self):
+        rows = deepcopy(self.quadratic)
+        for row in rows:
+            for field in ("p", "q"):
+                values = [Fraction(value) for value in row[field]]
+                row[field] = [f"{2 * value.numerator}/{2 * value.denominator}" for value in values]
+        quadratic.validate_quadratic_results(rows)
+
+    def test_injected_repeated_point_exits_nonzero(self):
+        program = """
+import sys
+import audit_user_certificate_quadratic as audit
+original = audit.point_case
+def repeated_point(name):
+    return original('canonical-i' if name == 'canonical-j' else name)
+audit.point_case = repeated_point
+sys.argv = ['quadratic-point-fault', '--kind', 'points', '--output', sys.argv[1]]
+audit.main()
+"""
+        with tempfile.TemporaryDirectory() as temporary:
+            environment = os.environ.copy()
+            environment["PYTHONPATH"] = os.pathsep.join(
+                [str(HERE / "original"), str(HERE / "audits")]
+            )
+            process = subprocess.run(
+                [sys.executable, "-c", program, str(Path(temporary) / "wrong.json")],
+                cwd=ROOT, env=environment, capture_output=True, text=True, timeout=180,
+            )
+        self.assertNotEqual(process.returncode, 0)
+        self.assertIn("q does not match quadratic case canonical-j", process.stdout + process.stderr)
+        self.assertNotIn("all six exact quadratic cases passed", process.stdout)
 
     def test_injected_quadratic_formula_exits_nonzero(self):
         program = """

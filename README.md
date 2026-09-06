@@ -18,6 +18,9 @@ python3 verification/verify.py
 Success prints `VERIFIED:`; failures exit with a nonzero status.
 Results are written to `replay-results/`.
 The default run also checks that malformed or inconsistent results are rejected.
+Exact point-audit records must match the registered rational base points and
+axis for each case, including the type-II case; labels alone do not establish
+geometric coverage.
 
 To reproduce the parameter selection in Appendix A.6, run
 `python3 verification/parameters.py`. This constructs the coefficient equations,
@@ -61,7 +64,7 @@ Links below open the relevant verification code.
 | Paper result | Main calculation | Additional check |
 | --- | --- | --- |
 | Proposition 4.4 | [Type-II coefficient](verification/original/verify.py#L122) | — |
-| Proposition 5.1 | [Quadratic matrices and lower bound](verification/original/verify.py#L23) | [Quadratic check](verification/audits/audit_user_certificate_quadratic.py#L166) |
+| Proposition 5.1 | [Quadratic matrices and lower bound](verification/original/verify.py#L23) | [Quadratic check](verification/audits/audit_user_certificate_quadratic.py#L209) |
 | Proposition 5.4 | [Mixed transverse derivatives](verification/original/verify.py#L23) | [Mixed-term check](verification/original/audit_checks.py) |
 | Proposition 6.1 | [Cubic coefficient and stationarity](verification/original/verify.py#L23) | [Contracted calculation](verification/audits/audit_user_certificate_engine.py#L113) |
 | Lemma 6.2 | [Smooth diagonal path](verification/audits/audit_user_certificate_center.py#L42) | — |

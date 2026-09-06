@@ -92,10 +92,22 @@ def clean(v):
     return str(v)
 
 
-POINT_CASES = (
-    "canonical-i", "canonical-j", "left-translate-i", "tilted-i",
-    "negative-angle-j", "type-II-first-null",
-)
+# Exact (p, q, axis) data, shared by the generator and the result validator.
+# Axis 0, 1, 2 denotes i, j, k in the left quaternionic frame.
+POINT_CASES = {
+    "canonical-i": ((1, 0, 0, 0), ("3/5", "4/5", 0, 0), 0),
+    "canonical-j": ((1, 0, 0, 0), ("3/5", 0, "4/5", 0), 1),
+    "left-translate-i": (
+        ("1/2", "1/2", "1/2", "1/2"),
+        ("-1/10", "7/10", "7/10", "-1/10"), 0,
+    ),
+    "tilted-i": (
+        ("3/5", 0, "4/5", 0),
+        ("3/13", "36/65", "4/13", "-48/65"), 0,
+    ),
+    "negative-angle-j": ((1, 0, 0, 0), ("3/5", 0, "-4/5", 0), 1),
+    "type-II-first-null": ((1, 0, 0, 0), (0, 0, 1, 0), 0),
+}
 
 
 def rational(value, label):
@@ -106,10 +118,41 @@ def rational(value, label):
     raise AssertionError(f"{label}: expected an exact rational number")
 
 
+def point_case(name):
+    """Return the exact geometric inputs used for this named calculation."""
+    p, q, axis = POINT_CASES[name]
+
+    def coordinates(values):
+        fractions = [rational(value, name) for value in values]
+        return ar([Q(value.numerator, value.denominator) for value in fractions])
+
+    return coordinates(p), coordinates(q), axis
+
+
+def validate_quadratic_geometry(rec):
+    expected_p, expected_q, expected_axis = POINT_CASES[rec["case"]]
+    for field, expected in (("p", expected_p), ("q", expected_q)):
+        values = rec.get(field)
+        if not isinstance(values, list) or len(values) != 4:
+            raise AssertionError(f"{field}: expected four exact quaternion coordinates")
+        actual = tuple(rational(value, f"{field}[{i}]") for i, value in enumerate(values))
+        if sum(value * value for value in actual) != 1:
+            raise AssertionError(f"{field}: quaternion is not unit length")
+        target = tuple(rational(value, field) for value in expected)
+        if actual != target:
+            raise AssertionError(f"{field} does not match quadratic case {rec['case']}")
+    axis = rec.get("axis")
+    if type(axis) is not int or axis not in (0, 1, 2):
+        raise AssertionError("axis: expected the integer 0, 1 or 2")
+    if axis != expected_axis:
+        raise AssertionError(f"axis does not match quadratic case {rec['case']}")
+
+
 def validate_quadratic_record(rec):
     """Check a serialized record before accepting it as a successful calculation."""
     if not isinstance(rec, dict) or rec.get("case") not in POINT_CASES:
         raise AssertionError("unexpected quadratic case")
+    validate_quadratic_geometry(rec)
     firsts = rec["first_variations"]
     if not isinstance(firsts, dict) or set(firsts) != {"O", "B", "C"}:
         raise AssertionError("incomplete first-variation checks")
@@ -208,17 +251,14 @@ def main():
         publish(dict(case="compact-K1-and-full-connection-cubic", passed=True))
         save("complete", "all selected complete-bundle checks passed")
         return
-    cases = [
-        ("canonical-i", eye(4)[0], 0, Q(3, 5), Q(4, 5)),
-        ("canonical-j", eye(4)[0], 1, Q(3, 5), Q(4, 5)),
-        ("left-translate-i", ar([Q(1, 2)] * 4), 0, Q(3, 5), Q(4, 5)),
-        ("tilted-i", ar([Q(3, 5), zero, Q(4, 5), zero]), 0, Q(5, 13), Q(12, 13)),
-        ("negative-angle-j", eye(4)[0], 1, Q(3, 5), Q(-4, 5)),
-    ]
-    for name, p, axis, a, b in cases:
+    for name in POINT_CASES:
+        if name == "type-II-first-null":
+            continue
         save("quadratic", name)
-        r = a * eye(4)[0] + b * eye(4)[1 + axis]
-        q = qmul(p, r)
+        p, q, axis = point_case(name)
+        r = qmul(p * ar([one, -one, -one, -one]), q)
+        a, b = r[0], r[1 + axis]
+        assert all(r[index] == 0 for index in range(1, 4) if index != 1 + axis)
         base = ExactBase(*g_jets(r))
         base.setup_plane(axis)
         i, j = axis, 3 + axis
@@ -255,10 +295,10 @@ def main():
             rec["Q_B_discrepancy"] = qb - rec["Q_B_claimed"]
         publish(rec)
     save("first-null", "type-II rational representative")
-    p, q, axis = eye(4)[0], eye(4)[2], 0
+    p, q, axis = point_case("type-II-first-null")
     base = ExactBase(*g_jets(q))
     jets = tensorjets(p, q)
-    publish(dict(case="type-II-first-null", first_variations={
+    publish(dict(case="type-II-first-null", p=p, q=q, axis=axis, first_variations={
         n: first(base, jets[n], axis) for n in ("O", "B", "C")
     }))
     validate_quadratic_results(results)
